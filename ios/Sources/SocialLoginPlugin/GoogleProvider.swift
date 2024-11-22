@@ -238,36 +238,37 @@ class GoogleProvider {
 
 
     private func createLoginResponse(user: GIDGoogleUser, completion: @escaping (Result<GoogleLoginResponse, Error>) -> Void) {
+        // For platform consistency sake, I will fetch the userinfo API, but it's really not needed
         AF.request(
             USERINFO_URL,
             method: .get,
             headers: ["Authorization": "Bearer \(user.accessToken.tokenString)"]
         )
-        .validate(statusCode: 200..<300)
+        .validate(statusCode: 200..<300) // Ensure the response status code is in the 200-299 range
         .responseDecodable(of: GoogleUserinfoResponse.self) { response in
             switch response.result {
                 
             case .success(let result):
                 var expires = abs((user.accessToken.expirationDate ?? Date()).timeIntervalSince(Date()))
-                completion(.success(GoogleLoginResponse(
-                    accessToken: GoogleLoginResponse.Authentication(
-                        token: user.accessToken.tokenString,
-                        expires: Int64(expires),
-                    ),
-                    profile: GoogleLoginResponse.Profile(
-                        email: result.email,
-                        familyName: result.family_name,
-                        givenName: result.given_name,
-                        id: result.sub,
-                        name: result.name,
-                        imageUrl: result.picture
-                    ),
-                    idToken: user.idToken?.tokenString
-                )))
+                completion(.success(GoogleLoginResponse(accessToken: GoogleLoginResponse.Authentication(token: user.accessToken.tokenString, expires: Int64(expires)),idToken: user.idToken?.tokenString, profile: GoogleLoginResponse.Profile(email: result.email, familyName: result.family_name, givenName: result.given_name, id: result.sub, name: result.name, imageUrl: result.picture))))
             case .failure(let err):
                 completion(.failure(err))
             }
-        }
+        };
+                
+//        return GoogleLoginResponse(
+//            authentication: GoogleLoginResponse.Authentication(
+//                accessToken: user.accessToken.tokenString,
+//                idToken: user.idToken?.tokenString,
+//                refreshToken: user.refreshToken.tokenString
+//            ),
+//            email: user.profile?.email,
+//            familyName: user.profile?.familyName,
+//            givenName: user.profile?.givenName,
+//            id: user.userID,
+//            name: user.profile?.name,
+//            imageUrl: user.profile?.imageURL(withDimension: 100)?.absoluteString
+//        )
     }
 }
 
@@ -275,7 +276,7 @@ struct GoogleLoginResponse {
     let accessToken: Authentication?
     let profile: Profile?
     var serverAuthCode: String? = nil
-        let idToken: String?
+    let idToken: String?
 
     struct Authentication {
         let token: String

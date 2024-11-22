@@ -274,7 +274,7 @@ Login with the selected provider
 ### logout(...)
 
 ```typescript
-logout(options: { provider: "apple" | "google" | "facebook"; }) => Promise<void>
+logout(options: { provider: 'apple' | 'google' | 'facebook'; }) => Promise<void>
 ```
 
 Logout
@@ -340,19 +340,19 @@ Refresh the access token
 
 #### InitializeOptions
 
-| Prop           | Type                                                                                     |
-| -------------- | ---------------------------------------------------------------------------------------- |
-| **`facebook`** | <code>{ appId: string; clientToken: string; }</code>                                     |
-| **`google`**   | <code>{ iOSClientId?: string; iOSServerClientId?: string; webClientId?: string; }</code> |
-| **`apple`**    | <code>{ clientId?: string; redirectUrl?: string; }</code>                                |
+| Prop           | Type                                                                                                                   |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **`facebook`** | <code>{ appId: string; clientToken: string; }</code>                                                                   |
+| **`google`**   | <code>{ iOSClientId?: string; iOSServerClientId?: string; webClientId?: string; mode?: 'online' \| 'offline'; }</code> |
+| **`apple`**    | <code>{ clientId?: string; redirectUrl?: string; }</code>                                                              |
 
 
 #### LoginResult
 
-| Prop           | Type                                                                                                                                                                                            | Description |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| **`provider`** | <code>'facebook' \| 'google' \| 'apple' \| 'twitter'</code>                                                                                                                                     | Provider    |
-| **`result`**   | <code><a href="#facebookloginresponse">FacebookLoginResponse</a> \| <a href="#googleloginresponse">GoogleLoginResponse</a> \| <a href="#appleproviderresponse">AppleProviderResponse</a></code> | Payload     |
+| Prop           | Type                                                                                                                                                                                                                                                                                | Description |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| **`provider`** | <code>'facebook' \| 'google' \| 'apple' \| 'twitter'</code>                                                                                                                                                                                                                         | Provider    |
+| **`result`**   | <code><a href="#facebookloginresponse">FacebookLoginResponse</a> \| <a href="#googleloginofflineresponse">GoogleLoginOfflineResponse</a> \| <a href="#googleloginonlineresponse">GoogleLoginOnlineResponse</a> \| <a href="#appleproviderresponse">AppleProviderResponse</a></code> | Payload     |
 
 
 #### FacebookLoginResponse
@@ -379,13 +379,23 @@ Refresh the access token
 | **`userId`**              | <code>string</code>   |
 
 
-#### GoogleLoginResponse
+#### GoogleLoginOfflineResponse
 
-| Prop              | Type                                                                                                                                                               |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`accessToken`** | <code><a href="#accesstoken">AccessToken</a> \| null</code>                                                                                                        |
-| **`idToken`**     | <code>string \| null</code>                                                                                                                                        |
-| **`profile`**     | <code>{ email: string \| null; familyName: string \| null; givenName: string \| null; id: string \| null; name: string \| null; imageUrl: string \| null; }</code> |
+| Prop                 | Type                        |
+| -------------------- | --------------------------- |
+| **`serverAuthCode`** | <code>string</code>         |
+| **`idToken`**        | <code>string \| null</code> |
+| **`responseType`**   | <code>'offline'</code>      |
+
+
+#### GoogleLoginOnlineResponse
+
+| Prop               | Type                                                                                                                                                                       |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`responseType`** | <code>'online'</code>                                                                                                                                                      |
+| **`accessToken`**  | <code><a href="#accesstoken">AccessToken</a> \| null</code>                                                                                                                |
+| **`idToken`**      | <code>string \| null</code>                                                                                                                                                |
+| **`profile`**      | <code>{ email: string \| null; familyName: string \| null; givenName: string \| null; id: string \| null; name: string \| null; imageUrl: string \| null; } \| null</code> |
 
 
 #### AppleProviderResponse
@@ -416,11 +426,11 @@ Refresh the access token
 
 #### GoogleLoginOptions
 
-| Prop                     | Type                  | Description                                                                                                                              | Default            | Since |
-| ------------------------ | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ----- |
-| **`scopes`**             | <code>string[]</code> | Specifies the scopes required for accessing Google APIs The default is defined in the configuration.                                     |                    |       |
-| **`nonce`**              | <code>string</code>   | Nonce                                                                                                                                    |                    |       |
-| **`grantOfflineAccess`** | <code>boolean</code>  | Set if your application needs to refresh access tokens when the user is not present at the browser. In response use `serverAuthCode` key | <code>false</code> | 3.1.0 |
+| Prop                    | Type                  | Description                                                                                          | Default            | Since |
+| ----------------------- | --------------------- | ---------------------------------------------------------------------------------------------------- | ------------------ | ----- |
+| **`scopes`**            | <code>string[]</code> | Specifies the scopes required for accessing Google APIs The default is defined in the configuration. |                    |       |
+| **`nonce`**             | <code>string</code>   | Nonce                                                                                                |                    |       |
+| **`forceRefreshToken`** | <code>boolean</code>  | Set if your application requires to force the refreshToken [Android only]                            | <code>false</code> | 3.1.0 |
 
 
 #### AppleProviderOptions
@@ -441,9 +451,10 @@ Refresh the access token
 
 #### AuthorizationCode
 
-| Prop      | Type                | Description |
-| --------- | ------------------- | ----------- |
-| **`jwt`** | <code>string</code> | Jwt         |
+| Prop              | Type                        | Description |
+| ----------------- | --------------------------- | ----------- |
+| **`jwt`**         | <code>string \| null</code> | Jwt         |
+| **`accessToken`** | <code>string \| null</code> | accessToken |
 
 
 #### AuthorizationCodeOptions

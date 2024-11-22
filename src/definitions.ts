@@ -35,7 +35,7 @@ export interface InitializeOptions {
     /**
      * Whether the app requires offline (serverAuthCode) or not
      */
-    mode?: "online" | "offline";
+    mode?: 'online' | 'offline';
   };
   apple?: {
     /**
@@ -91,8 +91,9 @@ export interface GoogleLoginOptions {
 }
 
 export interface GoogleLoginOnlineResponse {
-  responseType: "online";
+  responseType: 'online';
   accessToken: AccessToken | null;
+  idToken: string | null;
   profile: {
     email: string | null;
     familyName: string | null;
@@ -105,7 +106,8 @@ export interface GoogleLoginOnlineResponse {
 
 export interface GoogleLoginOfflineResponse {
   serverAuthCode: string;
-  responseType: "offline";
+  idToken: string | null;
+  responseType: 'offline';
 }
 
 export interface AppleProviderOptions {
@@ -144,7 +146,7 @@ export interface LoginOptions {
    * Provider
    * @description select provider to login with
    */
-  provider: "facebook" | "google" | "apple" | "twitter";
+  provider: 'facebook' | 'google' | 'apple' | 'twitter';
   /**
    * Options
    * @description payload to login with
@@ -157,16 +159,12 @@ export interface LoginResult {
    * Provider
    * @description select provider to login with
    */
-  provider: "facebook" | "google" | "apple" | "twitter";
+  provider: 'facebook' | 'google' | 'apple' | 'twitter';
   /**
    * Payload
    * @description payload to login with
    */
-  result:
-    | FacebookLoginResponse
-    | GoogleLoginOfflineResponse
-    | GoogleLoginOnlineResponse
-    | AppleProviderResponse;
+  result: FacebookLoginResponse | GoogleLoginOfflineResponse | GoogleLoginOnlineResponse | AppleProviderResponse;
 }
 
 export interface AccessToken {
@@ -217,7 +215,7 @@ export interface AuthorizationCodeOptions {
    * Provider
    * @description Provider for the authorization code
    */
-  provider: "apple" | "google" | "facebook";
+  provider: 'apple' | 'google' | 'facebook';
 }
 
 export interface isLoggedInOptions {
@@ -225,7 +223,7 @@ export interface isLoggedInOptions {
    * Provider
    * @description Provider for the isLoggedIn
    */
-  provider: "apple" | "google" | "facebook";
+  provider: 'apple' | 'google' | 'facebook';
 }
 
 export interface SocialLoginPlugin {
@@ -243,7 +241,7 @@ export interface SocialLoginPlugin {
    * Logout
    * @description logout the user
    */
-  logout(options: { provider: "apple" | "google" | "facebook" }): Promise<void>;
+  logout(options: { provider: 'apple' | 'google' | 'facebook' }): Promise<void>;
   /**
    * IsLoggedIn
    * @description logout the user
@@ -254,9 +252,7 @@ export interface SocialLoginPlugin {
    * Get the current access token
    * @description get the current access token
    */
-  getAuthorizationCode(
-    options: AuthorizationCodeOptions,
-  ): Promise<AuthorizationCode>;
+  getAuthorizationCode(options: AuthorizationCodeOptions): Promise<AuthorizationCode>;
   /**
    * Refresh the access token
    * @description refresh the access token

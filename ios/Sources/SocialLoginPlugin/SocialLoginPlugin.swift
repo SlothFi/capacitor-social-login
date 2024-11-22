@@ -305,7 +305,8 @@ public class SocialLoginPlugin: CAPPlugin, CAPBridgedPlugin {
                     ] : nil
                     var googleResult: [String: Any] = [
                         "accessToken": accessToken,
-                        "responseType": "online"
+                        "responseType": "online",
+                        "idToken": googleResponse.idToken ?? ""
                     ]
                     if let profile = profile {
                         googleResult["profile"] = profile

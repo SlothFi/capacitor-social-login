@@ -1,6 +1,6 @@
 {
   "name": "@slothfi/capacitor-social-login",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "All social logins in one plugin",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -13,16 +13,16 @@
     "ios/Sources",
     "ios/Tests",
     "Package.swift",
-    "CapgoCapacitorSocialLogin.podspec"
+    "SlothfiCapacitorSocialLogin.podspec"
   ],
-  "author": "Martin Donadieu <martin@capgo.app>",
+  "author": "Slothfi <info@slothfi.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Cap-go/capacitor-social-login.git"
+    "url": "git+https://github.com/Slothfi/capacitor-social-login.git"
   },
   "bugs": {
-    "url": "https://github.com/Cap-go/capacitor-social-login/issues"
+    "url": "https://github.com/Slothfi/capacitor-social-login/issues"
   },
   "keywords": [
     "capacitor",

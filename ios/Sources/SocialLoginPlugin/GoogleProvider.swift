@@ -231,8 +231,7 @@ class GoogleProvider {
     }
     
     private func createOfflineLoginResponse(code: String, completion: @escaping (Result<GoogleLoginResponse, Error>) -> Void) {
-        var res = GoogleLoginResponse(accessToken: nil, profile: nil)
-        res.serverAuthCode = code
+        let res = GoogleLoginResponse(accessToken: nil, profile: nil, serverAuthCode: code)
         completion(.success(res))
     }
 
@@ -249,8 +248,22 @@ class GoogleProvider {
             switch response.result {
                 
             case .success(let result):
-                var expires = abs((user.accessToken.expirationDate ?? Date()).timeIntervalSince(Date()))
-                completion(.success(GoogleLoginResponse(accessToken: GoogleLoginResponse.Authentication(token: user.accessToken.tokenString, expires: Int64(expires)),idToken: user.idToken?.tokenString, profile: GoogleLoginResponse.Profile(email: result.email, familyName: result.family_name, givenName: result.given_name, id: result.sub, name: result.name, imageUrl: result.picture))))
+                let expires = abs((user.accessToken.expirationDate ?? Date()).timeIntervalSince(Date()))
+                completion(.success(GoogleLoginResponse(
+                    accessToken: GoogleLoginResponse.Authentication(
+                        token: user.accessToken.tokenString,
+                        expires: Int64(expires)
+                    ),
+                    profile: GoogleLoginResponse.Profile(
+                        email: result.email,
+                        familyName: result.family_name,
+                        givenName: result.given_name,
+                        id: result.sub,
+                        name: result.name,
+                        imageUrl: result.picture
+                    ),
+                    idToken: user.idToken?.tokenString
+                )))
             case .failure(let err):
                 completion(.failure(err))
             }
@@ -275,8 +288,15 @@ class GoogleProvider {
 struct GoogleLoginResponse {
     let accessToken: Authentication?
     let profile: Profile?
-    var serverAuthCode: String? = nil
+    var serverAuthCode: String?
     let idToken: String?
+
+    init(accessToken: Authentication?, profile: Profile?, serverAuthCode: String? = nil, idToken: String? = nil) {
+        self.accessToken = accessToken
+        self.profile = profile
+        self.serverAuthCode = serverAuthCode
+        self.idToken = idToken
+    }
 
     struct Authentication {
         let token: String

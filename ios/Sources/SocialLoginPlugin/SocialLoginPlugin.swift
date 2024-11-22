@@ -249,7 +249,7 @@ public class SocialLoginPlugin: CAPPlugin, CAPBridgedPlugin {
             if let user = response as? SocialLoginUser {
                 call.resolve([
                     "accessToken": user.accessToken,
-                    "idToken": user.idToken as Any,
+                    "idToken": user.idToken,
                     "refreshToken": user.refreshToken as Any,
                     "expiresIn": user.expiresIn as Any
                 ])
@@ -291,33 +291,36 @@ public class SocialLoginPlugin: CAPPlugin, CAPBridgedPlugin {
                 ])
             } else if let googleResponse = response as? GoogleLoginResponse {
                 if let accessToken = googleResponse.accessToken {
-                    let accessToken: [String: Any] = [
+                    let accessTokenObj: [String: Any] = [
                         "token": accessToken.token,
                         "expires": String(describing: accessToken.expires)
                     ]
-                    let profile: [String: Any]? = googleResponse.profile != nil ? [
-                        "email": googleResponse.profile!.email,
-                        "familyName": googleResponse.profile!.familyName,
-                        "givenName": googleResponse.profile!.givenName,
-                        "id": googleResponse.profile!.id,
-                        "name": googleResponse.profile!.name,
-                        "imageUrl": googleResponse.profile!.imageUrl
-                    ] : nil
-                    var googleResult: [String: Any] = [
-                        "accessToken": accessToken,
-                        "responseType": "online",
-                        "idToken": googleResponse.idToken ?? ""
-                    ]
-                    if let profile = profile {
-                        googleResult["profile"] = profile
+                    
+                    let profile: [String: Any]? = googleResponse.profile.map { profile in
+                        [
+                            "email": profile.email,
+                            "familyName": profile.familyName,
+                            "givenName": profile.givenName,
+                            "id": profile.id,
+                            "name": profile.name,
+                            "imageUrl": profile.imageUrl
+                        ]
                     }
+                    
+                    let googleResult: [String: Any] = [
+                        "accessToken": accessTokenObj,
+                        "responseType": "online",
+                        "idToken": googleResponse.idToken ?? "",
+                        "profile": profile ?? NSNull()
+                    ]
+                    
                     call.resolve([
                         "provider": "google",
                         "result": googleResult
                     ])
                     return
                 } else if let serverAuthCode = googleResponse.serverAuthCode {
-                    var googleResult: [String: Any] = [
+                    let googleResult: [String: Any] = [
                         "serverAuthCode": serverAuthCode,
                         "responseType": "offline"
                     ]
@@ -327,10 +330,9 @@ public class SocialLoginPlugin: CAPPlugin, CAPBridgedPlugin {
                     ])
                     return
                 } else {
-                    call.reject("neither serverAuthCode or access token not found when serializing GoogleLoginResponse")
+                    call.reject("Neither serverAuthCode nor access token found when serializing GoogleLoginResponse")
                     return
                 }
-
             } else if let facebookResponse = response as? FacebookLoginResponse {
                 let facebookResult: [String: Any] = [
                     "accessToken": facebookResponse.accessToken,

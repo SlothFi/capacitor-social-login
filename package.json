@@ -1,6 +1,6 @@
 {
   "name": "@slothfi/capacitor-social-login",
-  "version": "0.0.68-alpha.8",
+  "version": "0.0.1",
   "description": "All social logins in one plugin",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",

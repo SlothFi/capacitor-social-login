@@ -208,6 +208,11 @@ export interface AuthorizationCode {
    * @description An accessToken. It is NOT a JSON Web Token
    */
   accessToken?: string | null;
+  /**
+   * idToken
+   * @description An ID token returned by the provider
+   */
+  idToken?: string | null;
 }
 
 export interface AuthorizationCodeOptions {

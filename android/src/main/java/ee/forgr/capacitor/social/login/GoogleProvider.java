@@ -538,15 +538,15 @@ public class GoogleProvider implements SocialProvider {
                                   jsonObject
                                 );
                                 String name = jsonObject.getString("name");
-                                String givenName = jsObject.getString(
+                                String givenName = jsObject.optString(
                                   "given_name",
                                   ""
                                 );
-                                String familyName = jsObject.getString(
+                                String familyName = jsObject.optString(
                                   "family_name",
                                   ""
                                 );
-                                String picture = jsObject.getString(
+                                String picture = jsObject.optString(
                                   "picture",
                                   ""
                                 );
